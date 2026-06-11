@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+spring:
+  # Cấu hình múi giờ cho toàn bộ ứng dụng
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+  # Cấu hình múi giờ cho JPA/Hibernate
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Ho_Chi_Minh
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/rikkei_bank?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+jwt:
+  secret-key: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
+  access-token-expiration: 1800000      # 30 minutes in ms
+  refresh-token-expiration: 86400000    # 1 day in ms
+
+cloudinary:
+  cloud-name: dfzpwkldb
+  api-key: 897762677499463
+  api-secret: PniRM-dTReHjvra-1agqrDvO93c
+
+logging:
+  level:
+    org.example.bankingapi: DEBUG
+    org.springframework.security: INFO
