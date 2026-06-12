@@ -12,5 +12,6 @@ public interface KycService {
                               MultipartFile frontImage, MultipartFile backImage);
     KycResponseDto reviewKyc(Long kycId, KycReviewRequest request, String reviewerUsername);
     KycResponseDto getKycByUserId(Long userId);
+    KycResponseDto getKycByUsername(String username);
     Page<KycResponseDto> getAllKyc(KycStatus status, Pageable pageable);
 }

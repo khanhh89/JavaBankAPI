@@ -2,10 +2,12 @@ package org.example.bankingapi.controller;
 
 import org.example.bankingapi.dto.request.KycReviewRequest;
 import org.example.bankingapi.dto.request.UpdateUserRequest;
+import org.example.bankingapi.dto.response.AccountResponseDto;
 import org.example.bankingapi.dto.response.ApiDataResponse;
 import org.example.bankingapi.dto.response.KycResponseDto;
 import org.example.bankingapi.dto.response.UserResponseDto;
 import org.example.bankingapi.enums.KycStatus;
+import org.example.bankingapi.service.BankAccountService;
 import org.example.bankingapi.service.KycService;
 import org.example.bankingapi.service.UserService;
 import jakarta.validation.Valid;
@@ -20,6 +22,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/staff")
 @PreAuthorize("hasRole('STAFF')")
@@ -28,6 +32,7 @@ public class StaffController {
 
     private final UserService userService;
     private final KycService kycService;
+    private final BankAccountService bankAccountService;
 
     @GetMapping("/customers")
     public ResponseEntity<ApiDataResponse<Page<UserResponseDto>>> listCustomers(
@@ -79,6 +84,39 @@ public class StaffController {
                 true,
                 "Duyệt hồ sơ KYC thành công",
                 kycService.reviewKyc(id, request, authentication.getName()),
+                null,
+                HttpStatus.OK
+        ), HttpStatus.OK);
+    }
+
+    @PostMapping("/users/{userId}/accounts")
+    public ResponseEntity<ApiDataResponse<AccountResponseDto>> createAccount(@PathVariable Long userId) {
+        return new ResponseEntity<>(new ApiDataResponse<>(
+                true,
+                "Tạo tài khoản thành công",
+                bankAccountService.createAccount(userId),
+                null,
+                HttpStatus.CREATED
+        ), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/accounts/{id}")
+    public ResponseEntity<ApiDataResponse<AccountResponseDto>> getAccountById(@PathVariable Long id) {
+        return new ResponseEntity<>(new ApiDataResponse<>(
+                true,
+                "Lấy thông tin tài khoản thành công",
+                bankAccountService.getAccountById(id),
+                null,
+                HttpStatus.OK
+        ), HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{userId}/accounts")
+    public ResponseEntity<ApiDataResponse<List<AccountResponseDto>>> getUserAccounts(@PathVariable Long userId) {
+        return new ResponseEntity<>(new ApiDataResponse<>(
+                true,
+                "Lấy danh sách tài khoản thành công",
+                bankAccountService.getAccountsByUserId(userId),
                 null,
                 HttpStatus.OK
         ), HttpStatus.OK);

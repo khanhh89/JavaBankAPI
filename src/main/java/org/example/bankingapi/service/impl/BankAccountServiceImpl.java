@@ -7,6 +7,7 @@ import org.example.bankingapi.exception.ResourceNotFoundException;
 import org.example.bankingapi.repository.BankAccountRepository;
 import org.example.bankingapi.repository.UserRepository;
 import org.example.bankingapi.service.BankAccountService;
+import org.example.bankingapi.util.AccountNumberGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,6 +24,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
     private final UserRepository userRepository;
+    private final AccountNumberGenerator accountNumberGenerator;
 
     @Override
     @Transactional
@@ -31,7 +33,7 @@ public class BankAccountServiceImpl implements BankAccountService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng với id: " + userId));
 
         BankAccount account = BankAccount.builder()
-                .accountNumber(generateAccountNumber())
+                .accountNumber(accountNumberGenerator.generate())
                 .user(user)
                 .build();
 
@@ -91,11 +93,4 @@ public class BankAccountServiceImpl implements BankAccountService {
                 .build();
     }
 
-    private String generateAccountNumber() {
-        String number;
-        do {
-            number = "1001" + String.format("%08d", (long) (Math.random() * 100_000_000L));
-        } while (bankAccountRepository.existsByAccountNumber(number));
-        return number;
-    }
 }

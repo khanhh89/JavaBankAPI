@@ -74,4 +74,26 @@ public class AdminController {
                 HttpStatus.OK
         ), HttpStatus.OK);
     }
+
+    @PostMapping("/users/{userId}/accounts")
+    public ResponseEntity<ApiDataResponse<AccountResponseDto>> createAccount(@PathVariable Long userId) {
+        return new ResponseEntity<>(new ApiDataResponse<>(
+                true,
+                "Tạo tài khoản thành công",
+                bankAccountService.createAccount(userId),
+                null,
+                HttpStatus.CREATED
+        ), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/accounts/{id}")
+    public ResponseEntity<ApiDataResponse<AccountResponseDto>> getAccountById(@PathVariable Long id) {
+        return new ResponseEntity<>(new ApiDataResponse<>(
+                true,
+                "Lấy thông tin tài khoản thành công",
+                bankAccountService.getAccountById(id),
+                null,
+                HttpStatus.OK
+        ), HttpStatus.OK);
+    }
 }

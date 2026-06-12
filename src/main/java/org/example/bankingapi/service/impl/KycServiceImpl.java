@@ -13,6 +13,7 @@ import org.example.bankingapi.repository.KycProfileRepository;
 import org.example.bankingapi.repository.UserRepository;
 import org.example.bankingapi.service.CloudinaryService;
 import org.example.bankingapi.service.KycService;
+import org.example.bankingapi.util.AccountNumberGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ public class KycServiceImpl implements KycService {
     private final UserRepository userRepository;
     private final BankAccountRepository bankAccountRepository;
     private final CloudinaryService cloudinaryService;
+    private final AccountNumberGenerator accountNumberGenerator;
 
     @Override
     @Transactional
@@ -90,7 +92,7 @@ public class KycServiceImpl implements KycService {
             boolean hasAccount = !bankAccountRepository.findByUserId(user.getId()).isEmpty();
             if (!hasAccount) {
                 BankAccount account = BankAccount.builder()
-                        .accountNumber(generateAccountNumber())
+                        .accountNumber(accountNumberGenerator.generate())
                         .user(user)
                         .build();
                 bankAccountRepository.save(account);
@@ -116,19 +118,21 @@ public class KycServiceImpl implements KycService {
 
     @Override
     @Transactional(readOnly = true)
+    public KycResponseDto getKycByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng: " + username));
+        KycProfile kycProfile = kycProfileRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hồ sơ KYC cho người dùng: " + username));
+        return mapToDto(kycProfile);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<KycResponseDto> getAllKyc(KycStatus status, Pageable pageable) {
         if (status != null) {
             return kycProfileRepository.findAllByStatus(status, pageable).map(this::mapToDto);
         }
         return kycProfileRepository.findAll(pageable).map(this::mapToDto);
-    }
-
-    private String generateAccountNumber() {
-        String number;
-        do {
-            number = "1001" + String.format("%08d", (long) (Math.random() * 100_000_000L));
-        } while (bankAccountRepository.existsByAccountNumber(number));
-        return number;
     }
 
     private KycResponseDto mapToDto(KycProfile kyc) {

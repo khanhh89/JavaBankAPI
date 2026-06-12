@@ -13,8 +13,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"fromAccount", "toAccount"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Transaction {
 
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

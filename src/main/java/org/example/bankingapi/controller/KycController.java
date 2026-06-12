@@ -40,13 +40,10 @@ public class KycController {
     @GetMapping("/me")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ApiDataResponse<KycResponseDto>> getMyKyc(Authentication authentication) {
-        // This endpoint should ideally call a method like getKycByUsername
-        // For now, let's assume the service handles the username->userId logic
-        // KycResponseDto kyc = kycService.getKycByUsername(authentication.getName());
         return new ResponseEntity<>(new ApiDataResponse<>(
                 true,
                 "Lấy thông tin KYC của bạn thành công.",
-                null, // Replace with actual service call
+                kycService.getKycByUsername(authentication.getName()),
                 null,
                 HttpStatus.OK
         ), HttpStatus.OK);
