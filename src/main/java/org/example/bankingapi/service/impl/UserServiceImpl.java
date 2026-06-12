@@ -1,5 +1,6 @@
 package org.example.bankingapi.service.impl;
 
+import org.example.bankingapi.dto.request.ChangePasswordRequest;
 import org.example.bankingapi.dto.request.ChangePinRequest;
 import org.example.bankingapi.dto.request.UpdateUserRequest;
 import org.example.bankingapi.dto.response.UserResponseDto;
@@ -88,5 +89,20 @@ public class UserServiceImpl implements UserService {
         user.setTransactionPin(passwordEncoder.encode(request.getNewPin()));
         userRepository.save(user);
         log.info("[XÁC THỰC] Người dùng '{}' đã thay đổi mã PIN giao dịch.", username);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(String username, ChangePasswordRequest request) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng: " + username));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new InvalidPinException("Mật khẩu hiện tại không đúng");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+        log.info("[XÁC THỰC] Người dùng '{}' đã thay đổi mật khẩu.", username);
     }
 }

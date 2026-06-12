@@ -1,5 +1,6 @@
 package org.example.bankingapi.controller;
 
+import org.example.bankingapi.dto.request.ChangePasswordRequest;
 import org.example.bankingapi.dto.request.ChangePinRequest;
 import org.example.bankingapi.dto.request.UpdateUserRequest;
 import org.example.bankingapi.dto.response.ApiDataResponse;
@@ -74,6 +75,21 @@ public class UserController {
         return new ResponseEntity<>(new ApiDataResponse<>(
                 true,
                 "Xóa người dùng thành công",
+                null,
+                null,
+                HttpStatus.OK
+        ), HttpStatus.OK);
+    }
+
+    @PutMapping("/me/password")
+    public ResponseEntity<ApiDataResponse<Void>> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            Authentication authentication) {
+
+        userService.changePassword(authentication.getName(), request);
+        return new ResponseEntity<>(new ApiDataResponse<>(
+                true,
+                "Thay đổi mật khẩu thành công",
                 null,
                 null,
                 HttpStatus.OK

@@ -1,5 +1,6 @@
 package org.example.bankingapi.service;
 
+import org.example.bankingapi.dto.request.ChangePasswordRequest;
 import org.example.bankingapi.dto.request.ChangePinRequest;
 import org.example.bankingapi.dto.request.UpdateUserRequest;
 import org.example.bankingapi.dto.response.UserResponseDto;
@@ -13,4 +14,5 @@ public interface UserService {
     UserResponseDto updateUser(Long id, UpdateUserRequest request);
     void deleteUser(Long id);
     void changePin(String username, ChangePinRequest request);
+    void changePassword(String username, ChangePasswordRequest request);
 }
