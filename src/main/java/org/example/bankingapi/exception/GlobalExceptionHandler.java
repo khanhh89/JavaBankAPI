@@ -93,6 +93,21 @@ public class GlobalExceptionHandler {
                 .body(buildError(400, "Yêu cầu không hợp lệ", "Kích thước tệp vượt quá giới hạn tối đa 5MB", request));
     }
 
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(
+            RuntimeException ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest()
+                .body(buildError(400, "Yêu cầu không hợp lệ", ex.getMessage(), request));
+    }
+
+    @ExceptionHandler(org.springframework.web.HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMediaTypeNotSupported(
+            org.springframework.web.HttpMediaTypeNotSupportedException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                .body(buildError(415, "Media Type không hợp lệ",
+                        "Vui lòng gửi request với Content-Type: application/json", request));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(
             Exception ex, HttpServletRequest request) {

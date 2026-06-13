@@ -2,10 +2,8 @@ server:
   port: 8080
 
 spring:
-  # Cấu hình múi giờ cho toàn bộ ứng dụng
   jackson:
     time-zone: Asia/Ho_Chi_Minh
-  # Cấu hình múi giờ cho JPA/Hibernate
   jpa:
     properties:
       hibernate:
@@ -17,7 +15,7 @@ spring:
     show-sql: true
   
   datasource:
-    url: jdbc:mysql://localhost:3306/db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/base?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -26,6 +24,24 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 10MB
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: khanhabcabc0000@gmail.com
+    password: fwszwmmgpcmvmosr
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+otp:
+  expiration-minutes: 5
 
 jwt:
   secret-key: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
@@ -41,3 +57,5 @@ logging:
   level:
     org.example.bankingapi: DEBUG
     org.springframework.security: INFO
+    org.springframework.mail: DEBUG
+    com.sun.mail: DEBUG
